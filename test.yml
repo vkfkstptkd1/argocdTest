@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: express
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: express
+  labels: #여기 label이 굳이, pod의 label과 같진 않다. 하지만 그냥 코드 가독성을 위해서 맞춘다.
+    app: mariadb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata: # replica로 관리할 pod 에 대한 정의 
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+--- # pod를 연결하기 위한 서비스 정보를 정의하자.
+apiVersion: v1 
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: express
+spec:
+  selector: #연결할 pod의 라벨을 정의해준다~
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer  # cluster-ip, nodeport, loadbalancer 이렇게 세개가 있다.~
