@@ -12,7 +12,7 @@ metadata:
   labels: #여기 label이 굳이, pod의 label과 같진 않다. 하지만 그냥 코드 가독성을 위해서 맞춘다.
     app: mariadb
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: nginx
